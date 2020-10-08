@@ -29,6 +29,7 @@
     "@friends-library/types": "^1.1.2",
     "@sendgrid/mail": "^6.4.0",
     "bufferutil": "^4.0.1",
+    "encoding": "^0.1.13",
     "express-useragent": "^1.0.13",
     "isbot": "^3.0.1",
     "jsonschema": "1.2.6",
