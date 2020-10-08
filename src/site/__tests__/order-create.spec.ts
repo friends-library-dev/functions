@@ -12,7 +12,7 @@ jest.mock(`@friends-library/db`, () => ({
 }));
 
 describe(`/orders create handler`, () => {
-  it(`should return 201 with correct data if successful`, async () => {
+  it.only(`should return 201 with correct data if successful`, async () => {
     createIntent.mockResolvedValue({
       id: `intent_id`,
       client_secret: `intent_id_secret`,

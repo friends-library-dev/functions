@@ -10,6 +10,7 @@ export default function validateJson<Data>(
   if (process.env.NODE_ENV === `development` || process.env.JEST_WORKER_ID) {
     const result = validator.validate(schema.example, schema);
     if (result.errors.length) {
+      console.log(result.errors);
       return new Error(`schema.example does not validate`);
     }
   }

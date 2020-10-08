@@ -1,6 +1,8 @@
 import logDownload from '../log-download';
 import { invokeCb } from './invoke';
 
+process.env.CLOUD_STORAGE_BUCKET_URL = `/cloud/bucket`;
+
 jest.mock(`@friends-library/slack`);
 
 const create = jest.fn(() => Promise.resolve([null, true]));

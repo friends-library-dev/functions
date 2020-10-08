@@ -73,7 +73,7 @@ export const schema = {
     },
   },
   example: {
-    id: `f971b507-6ca3-4ebc-8388-86e3f245ef4b`,
+    id: `d8fe6f89-5b21-4576-a94f-ab677ddea201`,
     amount: 1111,
     taxes: 0,
     shipping: 399,
@@ -85,7 +85,7 @@ export const schema = {
     items: [
       {
         title: `Journal of George Fox (modernized)`,
-        documentId: `6b0e134d-8d2e-48bc-8fa3-e8fc79793804`,
+        documentId: `8be34b44-eb72-48db-b70c-db9ecc00b6a2`,
         edition: `modernized`,
         quantity: 1,
         unitPrice: 231,

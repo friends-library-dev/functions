@@ -1,6 +1,7 @@
 import mailer from '@sendgrid/mail';
 import { APIGatewayEvent } from 'aws-lambda';
-import { CheckoutError, checkoutErrors as Err, isDefined } from '@friends-library/types';
+import { isDefined } from 'x-ts-utils';
+import { CheckoutError, checkoutErrors as Err } from '@friends-library/types';
 import { LuluAPI } from '@friends-library/lulu';
 import { log } from '@friends-library/slack';
 import { Client as DbClient, Db } from '@friends-library/db';
