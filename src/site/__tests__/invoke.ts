@@ -23,6 +23,8 @@ export async function invokeCb(
     if (res.body && JSON.parse(res.body)) {
       json = JSON.parse(res.body);
     }
-  } catch {}
+  } catch {
+    // ¯\_(ツ)_/¯
+  }
   return { err, res, json };
 }
