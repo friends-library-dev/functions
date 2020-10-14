@@ -13,6 +13,7 @@
     "test:integration": "cd ../../ && yarn test --testRegex=packages/functions/.*/.*\\.integration\\.ts --env=node",
     "lint": "fldev lint",
     "lint:fix": "fldev lint:fix",
+    "format": "fldev format",
     "ts:check": "fldev ts:check"
   },
   "dependencies": {
@@ -26,7 +27,7 @@
     "@friends-library/env": "^1.2.0",
     "@friends-library/lulu": "^1.1.1",
     "@friends-library/slack": "^1.0.0",
-    "@friends-library/types": "^1.1.2",
+    "@friends-library/types": "^2.0.0",
     "@sendgrid/mail": "^6.4.0",
     "bufferutil": "^4.0.1",
     "encoding": "^0.1.13",
@@ -44,7 +45,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.6.2",
-    "@friends-library/dev": "^4.1.10",
+    "@friends-library/dev": "^4.1.11",
     "@types/aws-lambda": "^8.10.28",
     "@types/express-useragent": "^0.2.21",
     "@types/node-fetch": "^2.5.7",
