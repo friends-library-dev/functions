@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "serverless functions in the cloud!",
   "repository": "github:friends-library-dev/functions",
-  "main": "dist/index.js",
+  "private": true,
   "author": "Jared Henderson <jared@netrivet.com>",
   "license": "MIT",
   "scripts": {
