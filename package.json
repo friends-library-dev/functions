@@ -10,6 +10,7 @@
     "start": "NODE_ENV=development netlify-lambda serve src --config ./webpack.config.js --port 2345",
     "build": "NODE_ENV=production netlify-lambda build src",
     "test": "fldev test",
+    "compile": "true",
     "test:integration": "cd ../../ && yarn test --testRegex=packages/functions/.*/.*\\.integration\\.ts --env=node",
     "lint": "fldev lint",
     "lint:fix": "fldev lint:fix",
