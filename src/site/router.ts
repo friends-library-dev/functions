@@ -1,5 +1,6 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import logDownload from './log-download';
+import appDownload from './app-download';
 import createOrder from './order-create';
 import printJobFees from './print-job-fees';
 import submitContactForm from './submit-contact-form';
@@ -25,6 +26,8 @@ export default async function (
 
     if (path.startsWith(`log/download/`)) {
       return logDownload(event, respond);
+    } else if (path.startsWith(`app/download/`)) {
+      return appDownload(event, respond);
     }
   }
 

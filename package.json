@@ -50,6 +50,7 @@
     "@types/aws-lambda": "^8.10.28",
     "@types/express-useragent": "^0.2.21",
     "@types/node-fetch": "^2.5.7",
-    "@types/stripe": "^6.31.11"
+    "@types/stripe": "^6.31.11",
+    "@types/uuid": "^3.4.5"
   }
 }
