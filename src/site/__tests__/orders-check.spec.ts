@@ -141,7 +141,7 @@ describe(`checkOrders()`, () => {
     const { res } = await invokeCb(checkOrders, {});
 
     const emails = (<jest.Mock>mailer.send).mock.calls[0][0];
-    expect(findByPrintJobStatus).toHaveBeenCalledWith(`accepted`);
+    expect(findByPrintJobStatus).toHaveBeenCalledWith<any>(`accepted`);
     expect(emails.length).toBe(2);
     expect(emails[0].to).toBe(`foo@bar.com`);
     expect(emails[0].text).toContain(`track.me/123456`);
