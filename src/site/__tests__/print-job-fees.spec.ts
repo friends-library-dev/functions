@@ -39,7 +39,7 @@ describe(`printJobFees()`, () => {
   it(`translates passed body into correct body to pass to lulu`, async () => {
     const body = JSON.stringify(schema.example);
     await invokeCb(printJobFees, { body });
-    expect(printJobCosts).toHaveBeenCalledWith({
+    expect(printJobCosts).toHaveBeenCalledWith<any>({
       line_items: [
         {
           page_count: schema.example.items[0].pages,
