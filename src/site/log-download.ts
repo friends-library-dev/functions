@@ -117,7 +117,7 @@ function sendSlack(
   location: Location,
   format: DownloadFormat,
 ): void {
-  const from = referrer ? `, from url: \`${referrer}\`` : ``;
+  const from = referrer ? `, from url: \`${unUrl(referrer)}\`` : ``;
 
   let where = ``;
   if (location.city) {
@@ -130,4 +130,9 @@ function sendSlack(
   log[channel](
     `Download: \`${cloudPath}\`, device: \`${deviceSummary(ua)}\`${from}${where}`,
   );
+}
+
+// prevent slack from unfurling urls (even though they are in backticks)
+function unUrl(referrer: string): string {
+  return referrer.replace(/^https:\/\/www\.([^/]+)/, `[$1]`);
 }
