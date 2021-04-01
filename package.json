@@ -28,7 +28,7 @@
     "@friends-library/env": "^1.3.0",
     "@friends-library/lulu": "^1.2.1",
     "@friends-library/slack": "^2.0.0",
-    "@friends-library/types": "^4.0.0",
+    "@friends-library/types": "^4.1.0",
     "@sendgrid/mail": "^6.4.0",
     "bufferutil": "^4.0.1",
     "encoding": "^0.1.13",
