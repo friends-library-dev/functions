@@ -73,12 +73,12 @@ async function logDownload(
   }
 
   let location: Location = {
-    ip: headers[`client-ip`] || null,
+    ip: headers[IP_HEADER_KEY] || null,
   };
 
   // fetch location data for only 5% of podcast requests, to stay within rate limits
   if (location.ip && (format !== `podcast` || Math.random() < 0.05)) {
-    location = await getLocationData(headers[`client-ip`]);
+    location = await getLocationData(headers[IP_HEADER_KEY]);
   }
 
   const download: Db.Download = {
@@ -136,3 +136,7 @@ function sendSlack(
 function unUrl(referrer: string): string {
   return referrer.replace(/^https:\/\/www\.([^/]+)/, `[$1]`);
 }
+
+// this is the officially blessed header for resolving client IP, per Netlify:
+// https://answers.netlify.com/t/is-the-client-ip-header-going-to-be-supported-long-term/11203/2
+const IP_HEADER_KEY = `x-nf-client-connection-ip`;
