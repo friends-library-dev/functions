@@ -2,6 +2,7 @@ import '@friends-library/env/load';
 import { APIGatewayEvent } from 'aws-lambda';
 import env from '../lib/env';
 import {
+  isEdition,
   EditionType,
   AudioQuality,
   DownloadFormat,
@@ -29,12 +30,13 @@ async function logDownload(
   const cloudPath = `${editionPath}/${filename}`;
   let redirUri = `${env(`CLOUD_STORAGE_BUCKET_URL`)}/${cloudPath}`;
 
-  if (![`original`, `modernized`, `updated`].includes(editionType)) {
+  if (!isEdition(editionType)) {
     respond.clientError(`Bad editionType to /log/download: ${editionType}`);
     return;
   }
 
-  if (!DOWNLOAD_FORMATS.includes(format)) {
+  // @ts-ignore @TODO: temp, during app e-reader transition
+  if (!DOWNLOAD_FORMATS.includes(format) && format !== `app-ebook`) {
     respond.clientError(`Unknown download format: ${format}`);
     return;
   }
@@ -115,7 +117,7 @@ function sendSlack(
   referrer: string,
   cloudPath: string,
   location: Location,
-  format: DownloadFormat,
+  format: DownloadFormat | 'app-ebook', // @TODO temp
 ): void {
   const from = referrer ? `, from url: \`${unUrl(referrer)}\`` : ``;
 
