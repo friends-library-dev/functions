@@ -17,7 +17,7 @@ export default async function sendOrderConfirmationEmail(
     return respond.json({ msg: Err.INVALID_SEND_ORDER_CONFIRMATION_EMAIL_URL }, 400);
   }
 
-  const [, orderId] = pathMatch;
+  const [, orderId = ``] = pathMatch;
   const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
   const [findError, order] = await db.orders.findById(orderId);
 

@@ -100,6 +100,6 @@ export function urls(): { endpoint: string; origin: string } {
     endpoint = process.env.FNS_INTEGRATION_TEST_URL;
   }
   endpoint += `/.netlify/functions/site`;
-  const origin = endpoint.split(`/.netlify`)[0];
+  const origin = endpoint.split(`/.netlify`)[0]!;
   return { endpoint, origin };
 }

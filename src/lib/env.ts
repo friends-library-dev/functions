@@ -6,17 +6,17 @@ let context: Environment = `production`;
 export default function env(key: string): string {
   if (context === `production`) {
     const prodKey = `PROD_${key}`;
-    const prodValue = baseEnv.get(prodKey)[prodKey];
+    const prodValue = baseEnv.var(prodKey);
     if (prodValue !== ``) return prodValue;
   }
 
   if (context === `staging`) {
     const testKey = `TEST_${key}`;
-    const testValue = baseEnv.get(testKey)[testKey];
+    const testValue = baseEnv.var(testKey);
     if (testValue !== ``) return testValue;
   }
 
-  return baseEnv.require(key)[key];
+  return baseEnv.requireVar(key);
 }
 
 env.getContext = function (): Environment {

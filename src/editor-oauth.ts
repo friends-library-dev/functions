@@ -8,15 +8,12 @@ const handler: Handler = async (event: APIGatewayEvent) => {
     return { statusCode: 400 };
   }
 
-  const {
-    JONES_OAUTH_CLIENT_ID,
-    JONES_OAUTH_CLIENT_SECRET,
-    JONES_OAUTH_REDIR_URI,
-  } = env.require(
-    `JONES_OAUTH_CLIENT_ID`,
-    `JONES_OAUTH_CLIENT_SECRET`,
-    `JONES_OAUTH_REDIR_URI`,
-  );
+  const { JONES_OAUTH_CLIENT_ID, JONES_OAUTH_CLIENT_SECRET, JONES_OAUTH_REDIR_URI } =
+    env.require(
+      `JONES_OAUTH_CLIENT_ID`,
+      `JONES_OAUTH_CLIENT_SECRET`,
+      `JONES_OAUTH_REDIR_URI`,
+    );
 
   const url = [
     `https://github.com/login/oauth/access_token`,

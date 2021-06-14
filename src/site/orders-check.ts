@@ -126,7 +126,7 @@ async function sendShipmentTrackingEmails(
     mailer.setApiKey(env(`SENDGRID_API_KEY`));
     const sendResult = await mailer.send(emails);
     // typings are bad, sending multiple emails returns multiple responses, like below
-    const responses = (sendResult[0] as unknown) as [{ statusCode: number } | undefined];
+    const responses = sendResult[0] as unknown as [{ statusCode: number } | undefined];
     const failed = responses.filter((r) => r && r.statusCode >= 300);
     if (failed.length) {
       log.error(`bad send shipment tracking email response`, { error: failed });
@@ -140,5 +140,5 @@ function trackingUrl(job: LuluAPI.PrintJob): string | undefined {
   const firstLineItem = job.line_items[0];
   // this is a hair naive, theoretically there could be more than one shipment
   // for a huge order, this just gets the first tracking url, but probably good enough
-  return firstLineItem.tracking_urls ? firstLineItem.tracking_urls[0] : undefined;
+  return firstLineItem?.tracking_urls ? firstLineItem.tracking_urls[0] : undefined;
 }

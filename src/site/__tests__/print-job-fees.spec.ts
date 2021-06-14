@@ -42,9 +42,9 @@ describe(`printJobFees()`, () => {
     expect(printJobCosts).toHaveBeenCalledWith<any>({
       line_items: [
         {
-          page_count: schema.example.items[0].pages,
+          page_count: schema.example.items[0]!.pages,
           pod_package_id: `pod-package-id`,
-          quantity: schema.example.items[0].quantity,
+          quantity: schema.example.items[0]!.quantity,
         },
       ],
       shipping_address: {
