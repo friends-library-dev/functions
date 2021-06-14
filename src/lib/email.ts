@@ -30,9 +30,10 @@ export function orderShippedEmail(
   };
 }
 
-export function orderConfirmationEmail(
-  order: Db.Order,
-): { subject: string; text: string } {
+export function orderConfirmationEmail(order: Db.Order): {
+  subject: string;
+  text: string;
+} {
   const lang = order.lang;
   return {
     subject:

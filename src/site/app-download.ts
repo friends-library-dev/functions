@@ -10,7 +10,7 @@ export default async function appDownload(
   { path, headers }: APIGatewayEvent,
   respond: Responder,
 ): Promise<void> {
-  const [lang, platform] = path.replace(/.*\/app\/download\//, ``).split(`/`);
+  const [lang = ``, platform = ``] = path.replace(/.*\/app\/download\//, ``).split(`/`);
   if (![`en`, `es`].includes(lang) || ![`ios`, `android`].includes(platform)) {
     log.error(`Invalid app download path: ${path}`);
     respond.clientError();

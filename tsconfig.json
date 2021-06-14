@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "target": "es2017",
