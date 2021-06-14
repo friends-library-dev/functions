@@ -186,12 +186,18 @@ describe(`logDownload()`, () => {
 
   test.each(botCases)(`bot user agents should not be saved`, async (userAgent) => {
     const path = `/site/log/download/doc-id/en/george-fox/journal/modernized/podcast/podcast--lq.rss`;
-    await invokeCb(logDownload, {
-      path,
-      headers: {
-        'user-agent': userAgent,
-      },
-    });
+    await invokeCb(logDownload, { path, headers: { 'user-agent': userAgent } });
     expect(create).not.toHaveBeenCalled();
   });
+
+  const nonBotCases = [`FriendsLibrary/13 CFNetwork/1240.0.4 Darwin/20.5.0`];
+
+  test.each(nonBotCases)(
+    `user agent should not be categorized as bot`,
+    async (userAgent) => {
+      const path = `/site/log/download/doc-id/en/george-fox/journal/modernized/podcast/podcast--lq.rss`;
+      await invokeCb(logDownload, { path, headers: { 'user-agent': userAgent } });
+      expect(create).toHaveBeenCalled();
+    },
+  );
 });
