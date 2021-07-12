@@ -6,7 +6,9 @@ export type Location = Record<string, string | number | null>;
 
 export async function getLocationData(ip?: string): Promise<Location> {
   const emptyLocation: Location = { ip: ip || null };
-  if (!ip) return emptyLocation;
+  if (!ip || ip.startsWith(`100.64`)) {
+    return emptyLocation;
+  }
 
   try {
     const ipRes = await fetch(
