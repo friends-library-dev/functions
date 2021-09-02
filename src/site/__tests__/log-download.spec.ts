@@ -5,7 +5,7 @@ process.env.CLOUD_STORAGE_BUCKET_URL = `/cloud/bucket`;
 
 jest.mock(`@friends-library/slack`);
 
-const create = jest.fn(() => Promise.resolve([null, true]));
+const create = jest.fn(() => Promise.resolve({ success: true, value: { id: `123` } }));
 jest.mock(`@friends-library/db`, () => ({
   Client: class {
     downloads = { create };
@@ -42,7 +42,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--mp3s--lq.zip`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3-zip`,
         audioQuality: `LQ`,
         audioPartNumber: undefined,
@@ -53,7 +53,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--mp3s.zip`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3-zip`,
         audioQuality: `HQ`,
         audioPartNumber: undefined,
@@ -64,7 +64,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--pt2.mp3`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3`,
         audioQuality: `HQ`,
         audioPartNumber: 2,
@@ -75,7 +75,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--pt2--lq.mp3`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3`,
         audioQuality: `LQ`,
         audioPartNumber: 2,
@@ -86,7 +86,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--lq.m4b`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `m4b`,
         audioQuality: `LQ`,
         audioPartNumber: undefined,
@@ -97,7 +97,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal.m4b`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `m4b`,
         audioQuality: `HQ`,
         audioPartNumber: undefined,
@@ -108,7 +108,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--lq.mp3`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3`,
         audioQuality: `LQ`,
         audioPartNumber: 1,
@@ -119,7 +119,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal.mp3`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mp3`,
         audioQuality: `HQ`,
         audioPartNumber: 1,
@@ -130,7 +130,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--updated.epub`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `epub`,
       },
     ],
@@ -139,7 +139,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--updated.mobi`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `mobi`,
       },
     ],
@@ -148,7 +148,7 @@ describe(`logDownload()`, () => {
       `/cloud/bucket/en/george-fox/journal/updated/Journal--updated.pdf`,
       {
         documentId: `doc-id`,
-        edition: `updated`,
+        editionType: `updated`,
         format: `web-pdf`,
       },
     ],
@@ -157,7 +157,7 @@ describe(`logDownload()`, () => {
       `/george-fox/journal/modernized/podcast.rss`,
       {
         documentId: `doc-id`,
-        edition: `modernized`,
+        editionType: `modernized`,
         format: `podcast`,
         audioQuality: `HQ`,
       },
@@ -167,7 +167,7 @@ describe(`logDownload()`, () => {
       `/george-fox/journal/modernized/lq/podcast.rss`,
       {
         documentId: `doc-id`,
-        edition: `modernized`,
+        editionType: `modernized`,
         format: `podcast`,
         audioQuality: `LQ`,
       },

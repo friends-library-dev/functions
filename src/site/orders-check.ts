@@ -4,7 +4,7 @@ import { isDefined } from 'x-ts-utils';
 import { CheckoutError, checkoutErrors as Err } from '@friends-library/types';
 import { LuluAPI } from '@friends-library/lulu';
 import { log } from '@friends-library/slack';
-import { Client as DbClient, Db } from '@friends-library/db';
+import { Client as DbClient, Order, UpdateOrderInput } from '@friends-library/db';
 import env from '../lib/env';
 import Responder from '../lib/Responder';
 import luluClient from '../lib/lulu';
@@ -14,13 +14,14 @@ export default async function checkOrders(
   event: APIGatewayEvent,
   respond: Responder,
 ): Promise<void> {
-  const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
-  const [error, orders] = await db.orders.findByPrintJobStatus(`accepted`);
-  if (error || !orders) {
-    log.error(`Error retrieving orders for /orders/check`, { error, orders });
+  const db = new DbClient(env(`FLP_API_ENDPOINT`), env(`FLP_API_ORDERS_TOKEN`));
+  const findResult = await db.orders.findByPrintJobStatus(`accepted`);
+  if (!findResult.success) {
+    log.error(`Error retrieving orders for /orders/check`, { error: findResult.error });
     return respond.json({ msg: Err.ERROR_RETRIEVING_FLP_ORDERS }, 500);
   }
 
+  const orders = findResult.value;
   if (orders.length === 0) {
     log.debug(`No accepted print jobs to process`);
     return respond.json({ msg: `No accepted print jobs to process` });
@@ -32,8 +33,8 @@ export default async function checkOrders(
     return respond.json({ msg: printJobErr }, 500);
   }
 
-  const updatedOrders: Db.Order[] = [];
-  const recentlyShippedOrders: Db.Order[] = [];
+  const updatedOrders: UpdateOrderInput[] = [];
+  const recentlyShippedOrders: Order[] = [];
 
   jobs.forEach((job) => {
     const status = job.status.name;
@@ -56,23 +57,28 @@ export default async function checkOrders(
       case `CANCELED`:
         log.error(`order ${order.id} was ${status}!`);
         order.printJobStatus = status === `REJECTED` ? `rejected` : `canceled`;
-        updatedOrders.push(order);
+        updatedOrders.push({
+          id: order.id,
+          printJobStatus: status === `REJECTED` ? `rejected` : `canceled`,
+        });
         break;
 
       case `SHIPPED`:
         log.order(`Order ${order.id} shipped`);
-        order.printJobStatus = `shipped`;
-        updatedOrders.push(order);
+        updatedOrders.push({ id: order.id, printJobStatus: `shipped` });
         recentlyShippedOrders.push(order);
         break;
     }
   });
 
   if (updatedOrders.length) {
-    const [error] = await db.orders.saveAll(updatedOrders);
-    if (error) {
-      log.error(`error persisting updated orders`, { error });
-      return respond.json({ msg: Err.ERROR_UPDATING_FLP_ORDERS, error }, 500);
+    const updateResult = await db.orders.updateAll(updatedOrders);
+    if (!updateResult.success) {
+      log.error(`error persisting updated orders`, { error: updateResult.error });
+      return respond.json(
+        { msg: Err.ERROR_UPDATING_FLP_ORDERS, error: updateResult.error },
+        500,
+      );
     }
   }
 
@@ -93,7 +99,7 @@ export default async function checkOrders(
 }
 
 async function getPrintJobs(
-  orders: Db.Order[],
+  orders: Order[],
 ): Promise<[null | CheckoutError, LuluAPI.PrintJob[]]> {
   const ids = orders.map((o) => o.printJobId).filter(isDefined);
   const [json, status] = await luluClient().listPrintJobs(ids);
@@ -107,7 +113,7 @@ async function getPrintJobs(
 
 async function sendShipmentTrackingEmails(
   jobs: LuluAPI.PrintJob[],
-  orders: Db.Order[],
+  orders: Order[],
 ): Promise<void> {
   const shippedJobs = jobs.filter((job) => job.status.name === `SHIPPED`);
 

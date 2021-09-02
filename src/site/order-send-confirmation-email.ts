@@ -18,14 +18,15 @@ export default async function sendOrderConfirmationEmail(
   }
 
   const [, orderId = ``] = pathMatch;
-  const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
-  const [findError, order] = await db.orders.findById(orderId);
+  const db = new DbClient(env(`FLP_API_ENDPOINT`), env(`FLP_API_ORDERS_TOKEN`));
+  const findResult = await db.orders.findById(orderId);
 
-  if (!order) {
-    log.error(`order ${orderId} not found`, { error: findError });
+  if (!findResult.success) {
+    log.error(`order ${orderId} not found`, { error: findResult.error });
     return respond.json({ msg: Err.FLP_ORDER_NOT_FOUND }, 404);
   }
 
+  const order = findResult.value;
   try {
     log.order(`*Order submitted*`, {
       order: {

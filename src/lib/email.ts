@@ -1,5 +1,5 @@
 import { Lang } from '@friends-library/types';
-import { Db } from '@friends-library/db';
+import { Order } from '@friends-library/db';
 import env from './env';
 
 export function emailFrom(lang: Lang): string {
@@ -11,7 +11,7 @@ export function emailFrom(lang: Lang): string {
 }
 
 export function orderShippedEmail(
-  order: Db.Order,
+  order: Order,
   trackingUrl?: string,
 ): { subject: string; text: string } {
   const lang = order.lang;
@@ -30,7 +30,7 @@ export function orderShippedEmail(
   };
 }
 
-export function orderConfirmationEmail(order: Db.Order): {
+export function orderConfirmationEmail(order: Order): {
   subject: string;
   text: string;
 } {
@@ -47,7 +47,7 @@ export function orderConfirmationEmail(order: Db.Order): {
   };
 }
 
-function salutation(order: Db.Order, fallback: string): string {
+function salutation(order: Order, fallback: string): string {
   const name = order.address.name;
   if (typeof name === `string`) {
     return name.split(` `).shift() + `,`;
@@ -55,7 +55,7 @@ function salutation(order: Db.Order, fallback: string): string {
   return fallback;
 }
 
-function lineItems(order: Db.Order): string {
+function lineItems(order: Order): string {
   const items: { title: string; quantity: number }[] = order.items || [];
   return items.map((item) => `* (${item.quantity}) ${item.title}`).join(`\n`);
 }

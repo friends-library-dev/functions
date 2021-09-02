@@ -29,16 +29,19 @@ export default async function brickOrder(
 }
 
 async function setOrderStatusBricked(orderId: string): Promise<void> {
-  const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
-  const [, order] = await db.orders.findById(orderId);
-  if (!order) {
+  const db = new DbClient(env(`FLP_API_ENDPOINT`), env(`FLP_API_ORDERS_TOKEN`));
+  const findResult = await db.orders.findById(orderId);
+  if (!findResult.success) {
     log.error(`Unable to find order ${orderId} to set printJobStatus: bricked`);
     return;
   }
 
-  order.printJobStatus = `bricked`;
-  const [err, success] = await db.orders.save(order);
-  if (err || !success) {
+  const order = findResult.value;
+  const updateResult = await db.orders.update({
+    id: order.id,
+    printJobStatus: `bricked`,
+  });
+  if (!updateResult.success) {
     log.error(`Failed to update order ${orderId} to printJobStatus: bricked`);
     return;
   }
@@ -57,7 +60,9 @@ async function refundOrCancelPayment(paymentIntentId: string): Promise<void> {
     );
     log.error(`Created refund ${refund.id} for bricked order`);
   } catch (error) {
-    log.error(`Error creating refund for bricked order`, error);
+    log.error(`Error creating refund for bricked order`, {
+      error: error instanceof Error ? error.message : `unknown error`,
+    });
   }
 
   try {
@@ -66,6 +71,8 @@ async function refundOrCancelPayment(paymentIntentId: string): Promise<void> {
   } catch (error) {
     // you can only cancel PI's in certain states, which I think we should never be in
     // but this is here just for a safeguard, so this error is "expected"
-    log.error(`Error cancelling payment intent (expected)`, error);
+    log.error(`Error cancelling payment intent (expected)`, {
+      error: error instanceof Error ? error.message : `unknown error`,
+    });
   }
 }

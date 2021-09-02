@@ -7,10 +7,11 @@ import {
   AudioQuality,
   DownloadFormat,
   DOWNLOAD_FORMATS,
+  DownloadSource,
 } from '@friends-library/types';
 import useragent from 'express-useragent';
 import isbot from 'isbot';
-import { Client as DbClient, Db } from '@friends-library/db';
+import { Client as DbClient, CreateDownloadInput } from '@friends-library/db';
 import { log } from '@friends-library/slack';
 import Responder from '../lib/Responder';
 import { deviceSummary } from '../lib/device';
@@ -35,8 +36,7 @@ async function logDownload(
     return;
   }
 
-  // @ts-ignore @TODO: temp, during app e-reader transition
-  if (!DOWNLOAD_FORMATS.includes(format) && format !== `app-ebook`) {
+  if (!DOWNLOAD_FORMATS.includes(format)) {
     respond.clientError(`Unknown download format: ${format}`);
     return;
   }
@@ -84,9 +84,21 @@ async function logDownload(
     location = await getLocationData(headers[IP_HEADER_KEY]);
   }
 
-  const download: Db.Download = {
+  let source: DownloadSource = `website`;
+  if (format === `app-ebook` || isAppUserAgent) {
+    source = `app`;
+  } else if (
+    userAgent.match(
+      /(podcast|stitcher|tunein|audible|spotify|pocketcasts|overcast|castro|castbox)/i,
+    )
+  ) {
+    source = `podcast`;
+  }
+
+  const download: CreateDownloadInput = {
     documentId: docId,
-    edition: editionType,
+    source,
+    editionType,
     format,
     audioQuality,
     audioPartNumber,
@@ -96,14 +108,13 @@ async function logDownload(
     platform: parsedUserAgent.platform,
     referrer,
     ...location,
-    created: new Date().toISOString(),
     userAgent,
   };
 
-  const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
-  const [error] = await db.downloads.create(download);
-  if (error) {
-    log.error(`error adding download to db`, { error });
+  const db = new DbClient(env(`FLP_API_ENDPOINT`), env(`FLP_API_DOWNLOADS_TOKEN`));
+  const createResult = await db.downloads.create(download);
+  if (!createResult.success) {
+    log.error(`error adding download to db`, { error: createResult.error });
   } else {
     log.debug(`Download added to db:`, { download });
   }

@@ -9,14 +9,17 @@ jest.mock(`@sendgrid/mail`, () => ({
   send: jest.fn(() => Promise.resolve([{ statusCode: 202 }])),
 }));
 
-const saveAll = jest.fn(() => Promise.resolve([null, true]));
+const updateAll = jest.fn(() => Promise.resolve({ success: true, value: { id: `123` } }));
 const findByPrintJobStatus = jest.fn(() =>
-  Promise.resolve([null, [{ printJobId: 123, address: { name: `Bo` } }]]),
+  Promise.resolve({
+    success: true,
+    value: [{ printJobId: 123, address: { name: `Bo` } }],
+  }),
 );
 
 jest.mock(`@friends-library/db`, () => ({
   Client: class {
-    orders = { saveAll, findByPrintJobStatus };
+    orders = { updateAll, findByPrintJobStatus };
   },
 }));
 
@@ -34,7 +37,7 @@ describe(`checkOrders()`, () => {
   beforeEach(() => jest.clearAllMocks());
 
   it(`returns 200 w/ message without doing anything when no orders in accepted state`, async () => {
-    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce([null, []]);
+    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce({ success: true, value: [] });
     const { res, json } = await invokeCb(checkOrders, {});
     expect(res.statusCode).toBe(200);
     expect(json).toMatchObject({ msg: `No accepted print jobs to process` });
@@ -42,10 +45,10 @@ describe(`checkOrders()`, () => {
   });
 
   it(`hits lulu api with ids of interesting orders`, async () => {
-    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce([
-      null,
-      [{ printJobId: 234 }, { printJobId: 456 }],
-    ]);
+    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce({
+      success: true,
+      value: [{ printJobId: 234 }, { printJobId: 456 }],
+    });
     await invokeCb(checkOrders, {});
     expect(mockFetch.mock.calls[0][0]).toMatch(/print-jobs\/\?id=234&id=456$/);
   });
@@ -58,16 +61,16 @@ describe(`checkOrders()`, () => {
   });
 
   it(`does not try to send empty email list`, async () => {
-    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce([
-      null,
-      [{ printJobId: 123, email: `foo@bar.com` }],
-    ]);
+    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce({
+      success: true,
+      value: [{ printJobId: 999, email: `foo@bar.com` }],
+    });
     mockFetch.mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           results: [
             {
-              id: 123,
+              id: 999,
               status: { name: `IN_PRODUCTION` },
               line_items: [],
             },
@@ -80,9 +83,9 @@ describe(`checkOrders()`, () => {
   });
 
   it(`sends emails with tracking links`, async () => {
-    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce([
-      null,
-      [
+    (<jest.Mock>findByPrintJobStatus).mockResolvedValueOnce({
+      success: true,
+      value: [
         {
           printJobId: 123,
           printJobStatus: `accepted`,
@@ -102,7 +105,7 @@ describe(`checkOrders()`, () => {
           address: { name: `Bo` },
         },
       ],
-    ]);
+    });
 
     mockFetch.mockResolvedValueOnce(
       new Response(
@@ -165,7 +168,7 @@ describe(`checkOrders()`, () => {
       ),
     );
     await invokeCb(checkOrders, {});
-    expect((<jest.Mock>saveAll).mock.calls[0][0]).toMatchObject([
+    expect((<jest.Mock>updateAll).mock.calls[0][0]).toMatchObject([
       { printJobStatus: `shipped` },
     ]);
   });
@@ -205,7 +208,7 @@ describe(`checkOrders()`, () => {
         }),
       ),
     );
-    (<jest.Mock>saveAll).mockResolvedValueOnce([[`error`], null]);
+    (<jest.Mock>updateAll).mockResolvedValueOnce([[`error`], null]);
 
     const { res, json } = await invokeCb(checkOrders, {});
 
