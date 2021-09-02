@@ -5,6 +5,7 @@
     "noImplicitOverride": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "target": "es2017",
     "outDir": "./dist"
   }

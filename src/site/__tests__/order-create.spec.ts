@@ -3,7 +3,7 @@ import auth, { schema } from '../order-create';
 import { invokeCb } from './invoke';
 
 const createIntent = jest.fn();
-const create = jest.fn(() => Promise.resolve([null, true]));
+const create = jest.fn(() => Promise.resolve({ success: true, value: { id: `123` } }));
 
 jest.mock(`@friends-library/db`, () => ({
   Client: class {

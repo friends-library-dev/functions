@@ -1,8 +1,8 @@
-import { Db } from '@friends-library/db';
+import { Order } from '@friends-library/db';
 import { orderShippedEmail, orderConfirmationEmail } from '../email';
 
 describe(`order email functions`, () => {
-  let order: Db.Order;
+  let order: Order;
 
   beforeEach(() => {
     order = {
@@ -14,7 +14,7 @@ describe(`order email functions`, () => {
         { title: `Journal of George Fox (original)`, quantity: 1 },
         { title: `Walk in the Spirit`, quantity: 3 },
       ],
-    } as Db.Order;
+    } as Order;
   });
 
   test(`orderEmailConfirmation() creates correct dynamic email text`, () => {

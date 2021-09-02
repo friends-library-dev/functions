@@ -19,7 +19,7 @@ const mockOrder = {
   },
 };
 
-const findById = jest.fn(() => Promise.resolve([null, mockOrder]));
+const findById = jest.fn(() => Promise.resolve({ success: true, value: mockOrder }));
 jest.mock(`@friends-library/db`, () => ({
   Client: class {
     orders = { findById };
@@ -56,10 +56,10 @@ describe(`sendOrderConfirmationEmail()`, () => {
   });
 
   it(`should send custom email data`, async () => {
-    (<jest.Mock>findById).mockResolvedValueOnce([
-      null,
-      { ...mockOrder, id: `345`, email: `foo@bar.com` },
-    ]);
+    (<jest.Mock>findById).mockResolvedValueOnce({
+      success: true,
+      value: { ...mockOrder, id: `345`, email: `foo@bar.com` },
+    });
     await invokeCb(sendConfirmation, {
       path: `/site/orders/345/confirmation-email`,
     });

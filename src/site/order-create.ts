@@ -1,6 +1,6 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import { checkoutErrors as Err } from '@friends-library/types';
-import { Client as DbClient, Db } from '@friends-library/db';
+import { checkoutErrors as Err, EditionType } from '@friends-library/types';
+import { Client as DbClient, CreateOrderInput } from '@friends-library/db';
 import { log } from '@friends-library/slack';
 import validateJson from '../lib/validate-json';
 import Responder from '../lib/Responder';
@@ -16,15 +16,22 @@ export default async function orderCreateHandler(
     return respond.json({ msg: Err.INVALID_FN_REQUEST_BODY, details: data.message }, 400);
   }
 
-  const now = new Date().toISOString();
-  const order: Db.Order = {
+  // @TODO - maybe replace this whole route, have payment intent create
+  // return a single-use token for creating an order, then hit graphql api directly
+
+  const order: CreateOrderInput = {
     id: data.id,
     lang: data.lang === `en` ? `en` : `es`,
     email: data.email,
     shippingLevel: data.shippingLevel,
-    created: now,
-    updated: now,
-    items: data.items as Db.Order['items'],
+    source: `website`,
+    items: data.items.map((item) => ({
+      title: item.title,
+      documentId: item.documentId,
+      editionType: item.edition as EditionType,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+    })),
     address: data.address,
     amount: data.amount,
     shipping: data.shipping,
@@ -34,10 +41,10 @@ export default async function orderCreateHandler(
     printJobStatus: `presubmit`,
   };
 
-  const db = new DbClient(env(`FAUNA_SERVER_SECRET`));
-  const [error] = await db.orders.create(order);
-  if (error) {
-    log.error(`error creating flp order`, { error });
+  const db = new DbClient(env(`FLP_API_ENDPOINT`), env(`FLP_API_ORDERS_TOKEN`));
+  const createResult = await db.orders.create(order);
+  if (!createResult.success) {
+    log.error(`error creating flp order`, { error: createResult.error });
     return respond.json({ msg: Err.ERROR_CREATING_FLP_ORDER }, 500);
   }
 
