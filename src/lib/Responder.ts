@@ -10,12 +10,17 @@ export default class Responder {
     this.callback = callback;
   }
 
-  public json(body: Record<string, any>, statusCode = 200): void {
+  public json(
+    body: Record<string, any>,
+    statusCode = 200,
+    additionalHeaders: Record<string, string> = {},
+  ): void {
     this.callback(null, {
       statusCode,
       body: JSON.stringify(body),
       headers: {
         'Content-Type': `application/json`,
+        ...additionalHeaders,
       },
     });
   }
