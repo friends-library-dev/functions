@@ -16,20 +16,30 @@ export default async function printJobFees(
   { body }: APIGatewayEvent,
   respond: Responder,
 ): Promise<void> {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': `*`,
+    'Access-Control-Allow-Headers': `*`,
+    'Access-Control-Allow-Methods': `POST`,
+  };
+
   const data = validateJson<typeof schema.example>(body, schema);
   if (data instanceof Error) {
     log.error(`invalid body for /print-job/fees`, { body, error: data });
-    return respond.json({ msg: Err.INVALID_FN_REQUEST_BODY, details: data.message }, 400);
+    return respond.json(
+      { msg: Err.INVALID_FN_REQUEST_BODY, details: data.message },
+      400,
+      corsHeaders,
+    );
   }
 
   const client = luluClient();
   const cheapest = await calculateCheapest(data, client);
   if (!cheapest) {
     log.error(`shipping not possible`, { address: data.address });
-    return respond.json({ msg: Err.SHIPPING_NOT_POSSIBLE }, 400);
+    return respond.json({ msg: Err.SHIPPING_NOT_POSSIBLE }, 400, corsHeaders);
   }
 
-  respond.json(cheapest);
+  respond.json(cheapest, 200, corsHeaders);
 }
 
 /**
