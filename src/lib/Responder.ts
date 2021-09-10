@@ -24,6 +24,17 @@ export default class Responder {
     this.callback(null, { statusCode: 204 });
   }
 
+  public allowCORS(methods: string[] = [`GET`]): void {
+    this.callback(null, {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': `*`,
+        'Access-Control-Allow-Headers': `*`,
+        'Access-Control-Allow-Methods': methods.join(`, `),
+      },
+    });
+  }
+
   public redirect(location: string, statusCode: 302 | 301 = 302): void {
     this.callback(null, {
       statusCode,
