@@ -31,6 +31,10 @@ export default async function (
     }
   }
 
+  if (method === `OPTIONS` && path === `print-job/fees`) {
+    return respond.allowCORS([`POST`]);
+  }
+
   if (method === `POST`) {
     switch (path) {
       case `payment-intent`:
