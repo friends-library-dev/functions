@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import Responder from '../lib/Responder';
 
 export default async function brickOrder(

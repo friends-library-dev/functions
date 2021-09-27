@@ -3,7 +3,7 @@ import { APIGatewayEvent } from 'aws-lambda';
 import { isDefined } from 'x-ts-utils';
 import { CheckoutError, checkoutErrors as Err } from '@friends-library/types';
 import { LuluAPI } from '@friends-library/lulu';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import { Client as DbClient, Order, UpdateOrderInput } from '@friends-library/db';
 import env from '../lib/env';
 import Responder from '../lib/Responder';

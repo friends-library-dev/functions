@@ -1,5 +1,5 @@
 import { Handler, Context, Callback, APIGatewayEvent } from 'aws-lambda';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import Responder from './lib/Responder';
 import router from './site/router';
 import env from './lib/env';
