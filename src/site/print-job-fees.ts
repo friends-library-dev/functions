@@ -6,7 +6,7 @@ import {
   SHIPPING_LEVELS,
 } from '@friends-library/types';
 import { LuluAPI, LuluClient, podPackageId } from '@friends-library/lulu';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import validateJson from '../lib/validate-json';
 import Responder from '../lib/Responder';
 import { feeOffset } from '../lib/stripe';

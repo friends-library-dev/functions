@@ -12,7 +12,7 @@ import {
 import useragent from 'express-useragent';
 import isbot from 'isbot';
 import { Client as DbClient, CreateDownloadInput } from '@friends-library/db';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import Responder from '../lib/Responder';
 import { deviceSummary } from '../lib/device';
 import { getLocationData, locationSummary, mapUrl, Location } from '../lib/location';

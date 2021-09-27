@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { checkoutErrors as Err } from '@friends-library/types';
 import mailer from '@sendgrid/mail';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import { Client as DbClient } from '@friends-library/db';
 import env from '../lib/env';
 import Responder from '../lib/Responder';

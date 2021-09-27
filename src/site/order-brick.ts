@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import { Client as DbClient } from '@friends-library/db';
 import stripeClient from '../lib/stripe';
 import Responder from '../lib/Responder';

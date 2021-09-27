@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { checkoutErrors as Err, EditionType } from '@friends-library/types';
 import { Client as DbClient, CreateOrderInput } from '@friends-library/db';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import validateJson from '../lib/validate-json';
 import Responder from '../lib/Responder';
 import env from '../lib/env';

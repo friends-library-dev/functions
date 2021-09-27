@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import useragent from 'express-useragent';
 import isbot from 'isbot';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import Responder from '../lib/Responder';
 import { getLocationData, locationSummary, mapUrl } from '../lib/location';
 import { deviceSummary } from '../lib/device';

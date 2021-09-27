@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { log } from '@friends-library/slack';
+import log from '@friends-library/slack';
 import env from '../lib/env';
 
 export type Location = Record<string, string | number | null>;

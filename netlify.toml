@@ -1,2 +1,5 @@
 [build]
   Functions = "dist"
+
+[build.environment]
+  NODE_OPTIONS = "--unhandled-rejections=strict"
